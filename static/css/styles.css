@@ -1,0 +1,73 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    width: 390px;
+    margin: 100px auto;
+    padding: 50px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+h1 {
+    margin-bottom: 20px;
+}
+
+input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* Botão principal */
+.normal-button {
+    padding: 10px;
+    background: green;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.normal-button:hover {
+    background: darkgreen;
+}
+
+/* Container do botão de voltar */
+.button-container {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Estilo do botão de voltar */
+.back-button {
+    display: flex;
+    align-items: center;
+    background: green;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 18px;
+    color: white;
+    padding: 10px 20px;
+    width: auto;
+}
+
+.back-button img {
+    width: 20px;
+    height: 20px;
+    margin-right: 5px;
+}

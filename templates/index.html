@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IF Maps</title>
+    <style>
+        body {
+            text-align: center;
+            font-family: Arial, sans-serif;
+        }
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: rgb(34, 104, 34);
+            padding: 20px;
+            position: relative;
+        }
+        .logo {
+            width: 100px;
+            margin-right: 20px;
+        }
+        .header-text {
+            color: white;
+            font-size: 30px;
+            text-align: center;
+        }
+        .notification {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgb(214, 235, 27);
+            border: 2px solid black;
+            border-radius: 10px;
+            padding: 10px;
+        }
+        .notification img {
+            width: 40px;
+        }
+        .title {
+            font-size: 35px;
+            font-weight: bold;
+            margin: 20px 0;
+            padding-top: 50px;
+            color: black;
+        }
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 50px;
+            margin-top: 30px;
+        }
+        .button {
+            background-color: rgb(110, 110, 110);
+            color: black;
+            font-weight: bold;
+            padding: 15px 30px;
+            border-radius: 15px;
+            border: 2px solid black;
+            cursor: pointer;
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body style="background-color: rgb(255, 255, 255);">
+    <div class="header">
+        <img class="logo" src="../static/img/ifpb_logo_1.png" alt="Logo IFPB">
+        <div class="header-text" style="text-align: left;">
+            <b>Instituto Federal da Paraíba <br>
+                IFPB <br>
+                Ministério da Educação</b>
+        </div>
+        <div class="notification">
+            <img src="../static/img/bell-icon.png" alt="Notificação">
+        </div>
+    </div>
+    <div class="title">BEM VINDO AO IF MAPS, SELECIONE UMA OPÇÃO</div>
+    <div class="buttons">
+        <button class="button" onclick="window.location.href='/eventos'">EVENTOS</button>
+        <button class="button" onclick="window.location.href='/mapa'">LOCALIZAR SALA</button>
+        <button class="button" onclick="window.location.href='/login'">LOGIN</button>
+    </div>
+</body>
+</html>
