@@ -15,30 +15,27 @@ class User(db.Model, UserMixin):
         return True
 
 # Modelo de Evento
+from database import db
+
 class Evento(db.Model):
+    __tablename__ = 'evento'
+    __table_args__ = {'extend_existing': True}
+
     id = db.Column(db.Integer, primary_key=True)
     titulo = db.Column(db.String(150), nullable=False)
     descricao = db.Column(db.Text, nullable=False)
-    imagem = db.Column(db.String(300), nullable=True)  # Caminho da imagem no servidor
+    imagem = db.Column(db.String(300), nullable=True)
+    tipo = db.Column(db.String(50), nullable=False)  # Novo campo para tipo (evento, sala, laboratório)
 
-    def __init__(self, titulo, descricao, imagem=None):
+    def __init__(self, titulo, descricao, tipo, imagem=None):
         self.titulo = titulo
         self.descricao = descricao
+        self.tipo = tipo
         self.imagem = imagem
 
-# Função para adicionar eventos de teste automaticamente
 def initialize_database():
-    eventos_existentes = {evento.titulo for evento in Evento.query.all()}  # Obtém os títulos dos eventos já existentes
-
-    eventos_para_adicionar = [
-        Evento(titulo="SISU", descricao="SE INSCREVA NO SISU 2025", imagem="static/img/evento3.png")
-    ]
-
-    eventos_novos = [evento for evento in eventos_para_adicionar if evento.titulo not in eventos_existentes]
-
-    if eventos_novos:
-        db.session.add_all(eventos_novos)
-        db.session.commit()
+    # Esta função não adicionará mais eventos de teste
+    pass
 
 # Função para inicializar o banco de dados
 def init_db(app):

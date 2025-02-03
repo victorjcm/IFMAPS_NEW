@@ -142,3 +142,18 @@ input {
     text-decoration: underline;
     color: darkgreen;
 }
+
+.delete-button {
+    background-color: red;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    font-size: 14px;
+    border-radius: 3px;
+    margin-left: 10px;
+}
+
+.delete-button:hover {
+    background-color: darkred;
+}

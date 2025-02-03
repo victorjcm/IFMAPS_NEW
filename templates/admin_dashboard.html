@@ -1,29 +1,29 @@
-<!-- filepath: /c:/Users/vasco/Codigos/ifmaps-new/IFMAPS_NEW/templates/eventos.html -->
+<!-- filepath: /c:/Users/vasco/Codigos/ifmaps-new/IFMAPS_NEW/templates/admin_dashboard.html -->
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Eventos</title>
+    <title>Admin Dashboard</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
 <body>
     <div class="button-container">
         <button class="back-button" onclick="window.history.back()">↩ Voltar</button>
     </div>
-    
     <div class="container">
-        <h1 class="titulo-evento">Eventos</h1>
-        
+        <h1>Admin Dashboard</h1>
+        <a href="{{ url_for('routes.adicionar') }}">Adicionar Evento ou Sala</a>
+        <h2>Eventos</h2>
         <ul class="lista-eventos">
             {% for evento in eventos %}
                 <li class="evento-item">
                     <a href="{{ url_for('routes.detalhes_evento', evento_id=evento.id) }}">
-                        {% if evento.imagem %}
-                        <img src="{{ url_for('static', filename='img/' ~ evento.imagem) }}" alt="{{ evento.titulo }}" style="width: 100px; height: auto;">
-                        {% endif %}
                         {{ evento.titulo }}
                     </a>
+                    <form method="POST" action="{{ url_for('routes.deletar_evento', evento_id=evento.id) }}" style="display:inline;">
+                        <button type="submit" class="delete-button">🗑️ Deletar</button>
+                    </form>
                 </li>
             {% endfor %}
         </ul>

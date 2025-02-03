@@ -1,0 +1,29 @@
+<!-- filepath: /c:/Users/vasco/Codigos/ifmaps-new/IFMAPS_NEW/templates/adicionar.html -->
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adicionar Evento ou Sala</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div class="button-container">
+        <button class="back-button" onclick="window.history.back()">↩ Voltar</button>
+    </div>
+    <div class="container">
+        <h1>Adicionar Evento ou Sala</h1>
+        <form method="POST" action="/adicionar" enctype="multipart/form-data">
+            <input type="text" name="titulo" placeholder="Título" required>
+            <textarea name="descricao" placeholder="Descrição" required></textarea>
+            <select name="tipo" required>
+                <option value="evento">Evento</option>
+                <option value="sala">Sala</option>
+                <option value="laboratorio">Laboratório</option>
+            </select>
+            <input type="file" name="imagem">
+            <button class="normal-button" type="submit">Adicionar</button>
+        </form>
+    </div>
+</body>
+</html>
