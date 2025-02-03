@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ evento.titulo }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div class="button-container">
+        <button class="back-button" onclick="window.history.back()">↩ Voltar</button>
+    </div>
+
+    <div class="evento">
+        <h1 class="titulo-evento">{{ evento.titulo }}</h1>
+        <p class="descricao">{{ evento.descricao }} <br>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloremque sunt, eos odio perspiciatis ipsa quidem, laboriosam numquam aperiam minima aliquam dolorum voluptatum natus cupiditate saepe ex laudantium quo fugiat porro. Lorem ipsum, dolor sit amet consectetur adipisicing elit. Tenetur dicta voluptas minima quis nisi saepe illo, deleniti enim! Eligendi, tempore perspiciatis modi dicta eaque provident saepe sunt iure amet alias.
+        </p>
+        {% if evento.imagem %}
+        <img src="{{ url_for('static', filename='img/evento3.png') }}" alt="{{ evento.titulo }}">
+        {% endif %}
+        <div style=" text-align: center; /* Centraliza o botão */
+         margin-top: 20px; /* Adiciona espaço entre a imagem e o botão */" >
+            <button class="encontrar-local" onclick="window.location.href='/mapa'">📍 Encontrar Local</button>
+        </div>
+    </div>
+    </div>
+</body>
+</html>
