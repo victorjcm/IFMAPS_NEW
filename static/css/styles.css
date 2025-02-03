@@ -15,9 +15,31 @@ body {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     position: relative;
 }
-
+.evento{
+    width: auto;
+    margin: 100px auto;
+    padding: 50px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    position: relative; 
+}
+.descricao{
+    text-align: left;
+}
 h1 {
     margin-bottom: 20px;
+}
+.titulo-evento {
+    display: inline-block; /* Faz com que a borda só envolva o conteúdo */
+    border: 3px solid green; /* Cor e espessura da borda */
+    padding: 10px 20px; /* Espaçamento interno para dar um efeito visual melhor */
+    border-radius: 10px; /* Bordas arredondadas para um design mais bonito */
+    font-size: 28px; /* Tamanho do texto */
+    font-weight: bold; /* Negrito */
+    text-align: center;
+    background-color: white; /* Fundo branco para destacar o título */
+    box-shadow: 0px 0px 10px rgba(0, 128, 0, 0.5); /* Sombra para um efeito mais bonito */
 }
 
 input {
@@ -70,4 +92,53 @@ input {
     width: 20px;
     height: 20px;
     margin-right: 5px;
+}
+
+.encontrar-local {
+    background-color: green;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    font-size: 18px;
+    font-weight: bold;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.encontrar-local:hover {
+    background-color: darkgreen;
+}
+
+.lista-eventos {
+    list-style: none;
+    padding: 0;
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.evento-item {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 12px 20px;
+    margin: 10px 0;
+    width: 300px;
+    text-align: center;
+    
+}
+
+.evento-item a {
+    text-decoration: none;
+    font-size: 26px;
+    font-weight: bold;
+    color: green;
+
+}
+
+.evento-item a:hover {
+    text-decoration: underline;
+    color: darkgreen;
 }

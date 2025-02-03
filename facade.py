@@ -1,16 +1,18 @@
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
-from database import db, init_db, User
+from database import db, init_db, User, initialize_database
 from auth import auth
+from routes import routes  # ✅ Certifique-se de que esta linha existe!
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
 app.config['SECRET_KEY'] = 'chave_secreta'
 
-# Inicializando o banco de dados
+# ✅ Inicializando o banco de dados
 init_db(app)
 
+# ✅ Configuração do Flask-Login
 login_manager = LoginManager(app)
 login_manager.login_view = 'auth.login'
 
@@ -18,8 +20,9 @@ login_manager.login_view = 'auth.login'
 def load_user(user_id):
     return User.query.get(int(user_id))
 
-# Registrando Blueprint do auth.py
+# ✅ Registrando os Blueprints corretamente
 app.register_blueprint(auth)
+app.register_blueprint(routes)
 
 @app.route('/')
 def index():
@@ -33,7 +36,7 @@ def mapa():
 def eventos():
     return render_template('eventos.html')
 
-# ✅ MANTENDO REGISTER NO FACADE.PY (PADRÃO FACADE)
+# ✅ Mantendo o Register no facade.py (Padrão Facade)
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
@@ -70,5 +73,6 @@ def buscar_sala():
 
 if __name__ == '__main__':
     with app.app_context():
-        db.create_all()  # Garante que o banco seja criado antes de rodar o app
+        db.create_all()  # ✅ Garante que o banco seja criado antes de rodar o app
+        initialize_database()  # ✅ Inicializa os eventos de teste
     app.run(debug=True)

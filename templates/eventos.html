@@ -1,11 +1,26 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Eventos</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
 <body>
-    <h1>TO AQUI NOS ZEVENTO</h1>
+    <div class="button-container">
+        <button class="back-button" onclick="window.history.back()">↩ Voltar</button>
+    </div>
+    
+    <div class="container">
+        <h1 class="titulo-evento">Eventos</h1>
+        
+        <ul class="lista-eventos">
+            {% for evento in eventos %}
+                <li class="evento-item">
+                    <a href="{{ url_for('routes.detalhes_evento', evento_id=evento.id) }}">{{ evento.titulo }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
 </body>
 </html>

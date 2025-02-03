@@ -1,28 +1,33 @@
-from flask import Flask, jsonify
-from flask_login import LoginManager
-from database import db, init_db
-from auth import auth
-from routes import routes
+from flask import Blueprint, render_template, request, redirect, url_for
+from models import Evento
+from database import db
 
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
-app.config['SECRET_KEY'] = 'chave_secreta'
+# Definição do Blueprint para rotas de eventos
+routes = Blueprint('routes', __name__)
 
-# Inicializando o banco de dados
-init_db(app)
+@routes.route('/eventos')
+def listar_eventos():
+    eventos = Evento.query.all()  # Busca todos os eventos do banco de dados
+    return render_template('eventos.html', eventos=eventos)
 
-login_manager = LoginManager(app)
-login_manager.login_view = 'auth.login'
+@routes.route('/evento/<int:evento_id>')
+def detalhes_evento(evento_id):
+    evento = Evento.query.get(evento_id)  # Busca evento pelo ID
+    if not evento:
+        return "Evento não encontrado", 404
+    return render_template('evento.html', evento=evento)
 
-from database import User
+# Rota para adicionar um novo evento
+@routes.route('/adicionar_evento', methods=['GET', 'POST'])
+def adicionar_evento():
+    if request.method == 'POST':
+        titulo = request.form['titulo']
+        descricao = request.form['descricao']
+        imagem = request.form['imagem']  # O caminho da imagem será armazenado
 
-@login_manager.user_loader
-def load_user(user_id):
-    return User.query.get(int(user_id))
+        novo_evento = Evento(titulo=titulo, descricao=descricao, imagem=imagem)
+        db.session.add(novo_evento)
+        db.session.commit()
+        return redirect(url_for('routes.listar_eventos'))  # Redireciona para lista de eventos
 
-# Registrando Blueprints
-app.register_blueprint(auth)
-app.register_blueprint(routes)
-
-if __name__ == '__main__':
-    app.run(debug=True)
+    return render_template('adicionar_evento.html')
