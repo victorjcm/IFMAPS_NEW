@@ -14,6 +14,11 @@ class User(db.Model, UserMixin):
     def is_active(self):
         return True
 
+    # Método para verificar se o usuário é o mestre
+    @property
+    def is_master(self):
+        return self.username == 'admin'
+
 # Modelo de Evento
 from database import db
 
