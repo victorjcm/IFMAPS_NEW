@@ -8,25 +8,30 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
 <body>
+    <div style="text-align: right;">
+        <button class="button login-button" onclick="window.location.href='/login'">LOGIN</button>
+    </div>
+
+    <h1 class="titulo-evento">Eventos</h1>
+    
+    <ul class="lista-eventos">
+        {% for evento in eventos %}
+            <li class="evento-item">
+                <a href="{{ url_for('routes.detalhes_evento', evento_id=evento.id) }}">
+                    <div class="evento-conteudo">
+                        <span>{{ evento.titulo }}</span>
+                        {% if evento.imagem %}
+                        <img src="{{ url_for('static', filename='img/' ~ evento.imagem) }}" alt="{{ evento.titulo }}" class="evento-imagem">
+                        {% endif %}
+                    </div>
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+    
     <div class="button-container">
         <button class="back-button" onclick="window.history.back()">↩ Voltar</button>
     </div>
-    
-    <div class="container">
-        <h1 class="titulo-evento">Eventos</h1>
-        
-        <ul class="lista-eventos">
-            {% for evento in eventos %}
-                <li class="evento-item">
-                    <a href="{{ url_for('routes.detalhes_evento', evento_id=evento.id) }}">
-                        {% if evento.imagem %}
-                        <img src="{{ url_for('static', filename='img/' ~ evento.imagem) }}" alt="{{ evento.titulo }}" style="width: 100px; height: auto;">
-                        {% endif %}
-                        {{ evento.titulo }}
-                    </a>
-                </li>
-            {% endfor %}
-        </ul>
-    </div>
+  
 </body>
 </html>
