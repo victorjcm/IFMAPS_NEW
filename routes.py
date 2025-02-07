@@ -70,3 +70,8 @@ def deletar_evento(evento_id):
 def admin_dashboard():
     eventos = Evento.query.all()
     return render_template('admin_dashboard.html', eventos=eventos)
+
+# Adicionar a rota para /mapa
+@routes.route('/mapa')
+def mapa():
+    return render_template('mapa.html')
