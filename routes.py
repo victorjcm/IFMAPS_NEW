@@ -7,22 +7,6 @@ import os
 # Definição do Blueprint para rotas de eventos
 routes = Blueprint('routes', __name__)
 
-# Rota para adicionar um novo evento
-@routes.route('/adicionar_evento', methods=['GET', 'POST'])
-def adicionar_evento():
-    if request.method == 'POST':
-        titulo = request.form['titulo']
-        descricao = request.form['descricao']
-        imagem = request.form['imagem']  # O caminho da imagem será armazenado
-
-        novo_evento = Evento(titulo=titulo, descricao=descricao, imagem=imagem)
-        db.session.add(novo_evento)
-        db.session.commit()
-        return redirect(url_for('routes.listar_eventos'))  # Redireciona para lista de eventos
-
-    return render_template('adicionar_evento.html')
-
-
 @routes.route('/adicionar', methods=['GET', 'POST'])
 @login_required
 def adicionar():
@@ -32,11 +16,25 @@ def adicionar():
         tipo = request.form['tipo']
         imagem = request.files['imagem']
 
+        # Definir o diretório de destino com base no tipo
+        if tipo == 'evento':
+            diretorio = 'static/img/eventos'
+        elif tipo == 'sala':
+            diretorio = 'static/img/salas'
+        elif tipo == 'laboratorio':
+            diretorio = 'static/img/laboratorios'
+        else:
+            diretorio = 'static/img/outros'
+
+        # Criar o diretório se não existir
+        if not os.path.exists(diretorio):
+            os.makedirs(diretorio)
+
         # Salvar a imagem no servidor
         imagem_path = None
         if imagem:
             imagem_filename = imagem.filename
-            imagem_path = os.path.join('static/img', imagem_filename)
+            imagem_path = os.path.join(diretorio, imagem_filename)
             imagem.save(imagem_path)
 
         novo_evento = Evento(titulo=titulo, descricao=descricao, tipo=tipo, imagem=imagem_filename)
@@ -48,7 +46,7 @@ def adicionar():
 
 @routes.route('/eventos')
 def listar_eventos():
-    eventos = Evento.query.all()
+    eventos = Evento.query.filter_by(tipo='evento').all()
     return render_template('eventos.html', eventos=eventos)
 
 @routes.route('/evento/<int:evento_id>')
@@ -74,4 +72,6 @@ def admin_dashboard():
 # Adicionar a rota para /mapa
 @routes.route('/mapa')
 def mapa():
-    return render_template('mapa.html')
+    salas = Evento.query.filter_by(tipo='sala').all()
+    laboratorios = Evento.query.filter_by(tipo='laboratorio').all()
+    return render_template('mapa.html', salas=salas, laboratorios=laboratorios)

@@ -21,7 +21,7 @@
                     <div class="evento-conteudo">
                         <span>{{ evento.titulo }}</span>
                         {% if evento.imagem %}
-                        <img src="{{ url_for('static', filename='img/' ~ evento.imagem) }}" alt="{{ evento.titulo }}" class="evento-imagem">
+                        <img src="{{ url_for('static', filename='img/eventos/' ~ evento.imagem) }}" alt="{{ evento.titulo }}" class="evento-imagem">
                         {% endif %}
                     </div>
                 </a>
