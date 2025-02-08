@@ -1,6 +1,9 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_user, login_required, logout_user, current_user, UserMixin
-from database import db, User
+from database import db
+from models import User
+from proxy import LoginProxy
+from strategy import MasterAuthStrategy, UserAuthStrategy
 
 auth = Blueprint('auth', __name__)
 
@@ -21,18 +24,21 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        
+
         # Verificar se é o usuário mestre
-        if username == MASTER_USERNAME and password == MASTER_PASSWORD:
+        master_auth = MasterAuthStrategy()
+        user_auth = UserAuthStrategy()
+        login_proxy = LoginProxy(login_user)
+
+        if master_auth.authenticate(username, password):
             user = MasterUser()
             login_user(user)
             return redirect(url_for('routes.admin_dashboard'))
         
         # Verificar se é um usuário normal
-        user = User.query.filter_by(username=username, password=password).first()
-        if user:
-            login_user(user)
-            return redirect(url_for('routes.admin_dashboard'))
+        if user_auth.authenticate(username, password):
+            if login_proxy.login(username, password):
+                return redirect(url_for('routes.admin_dashboard'))
         
         flash("Erro: Usuário ou senha incorretos!", 'danger')
     return render_template('login.html')

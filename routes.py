@@ -2,10 +2,16 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required
 from models import Evento
 from database import db
+from factory import EventoFactory
+from observer import EventoNotifier, AdminObserver
 import os
 
 # Definição do Blueprint para rotas de eventos
 routes = Blueprint('routes', __name__)
+
+notifier = EventoNotifier()
+admin_observer = AdminObserver()
+notifier.add_observer(admin_observer)
 
 @routes.route('/adicionar', methods=['GET', 'POST'])
 @login_required
@@ -37,9 +43,10 @@ def adicionar():
             imagem_path = os.path.join(diretorio, imagem_filename)
             imagem.save(imagem_path)
 
-        novo_evento = Evento(titulo=titulo, descricao=descricao, tipo=tipo, imagem=imagem_filename)
+        novo_evento = EventoFactory.create_evento(tipo, titulo, descricao, imagem_filename)
         db.session.add(novo_evento)
         db.session.commit()
+        notifier.notify_observers(novo_evento)
         return redirect(url_for('routes.listar_eventos'))
 
     return render_template('adicionar.html')
@@ -69,7 +76,6 @@ def admin_dashboard():
     eventos = Evento.query.all()
     return render_template('admin_dashboard.html', eventos=eventos)
 
-# Adicionar a rota para /mapa
 @routes.route('/mapa')
 def mapa():
     salas = Evento.query.filter_by(tipo='sala').all()

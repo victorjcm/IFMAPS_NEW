@@ -1,5 +1,21 @@
 from database import db
+from flask_login import UserMixin
 
+# Modelo de Usuário
+class User(db.Model, UserMixin):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(150), unique=True, nullable=False)
+    password = db.Column(db.String(150), nullable=False)
+
+    @property
+    def is_active(self):
+        return True
+
+    @property
+    def is_master(self):
+        return self.username == 'admin'
+
+# Modelo de Evento
 class Evento(db.Model):
     __tablename__ = 'evento'
     __table_args__ = {'extend_existing': True}
