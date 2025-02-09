@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
 from flask_login import login_required
 from models import Evento
 from database import db
@@ -81,3 +81,7 @@ def mapa():
     salas = Evento.query.filter_by(tipo='sala').all()
     laboratorios = Evento.query.filter_by(tipo='laboratorio').all()
     return render_template('mapa.html', salas=salas, laboratorios=laboratorios)
+
+@routes.route('/notificacoes')
+def notificacoes():
+    return jsonify(admin_observer.get_notifications())
