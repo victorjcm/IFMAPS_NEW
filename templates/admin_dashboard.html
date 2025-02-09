@@ -98,46 +98,48 @@
         {% endif %}
 
         <!-- ✅ Separando Eventos, Salas e Laboratórios -->
-        <div class="section">
-            <h2>Eventos</h2>
-            <ul class="lista-eventos" style="color: green; font-size: 22px;" >
-                {% for evento in eventos if evento.tipo == 'evento' %}
-                    <li class="evento-item">
-                            {{ evento.titulo }}
-                        <form method="POST" action="{{ url_for('routes.deletar_evento', evento_id=evento.id) }}" style="display:inline;">
-                            <button type="submit" class="delete-button">🗑️ Deletar</button>
-                        </form>
-                    </li>
-                {% endfor %}
-            </ul>
-        </div>
+        <div class="container-listas">
+            <div class="section">
+                <h2>Eventos</h2>
+                <ul class="lista-eventos">
+                    {% for evento in eventos %}
+                        <li class="evento-item">
+                            <a href="{{ url_for('routes.detalhes_evento', evento_id=evento.id) }}">{{ evento.titulo }}</a>
+                            <form method="POST" action="{{ url_for('routes.deletar_evento', evento_id=evento.id) }}">
+                                <button type="submit" class="delete-button">🗑️ Deletar</button>
+                            </form>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
 
-        <div class="section">
-            <h2>Salas</h2>
-            <ul class="lista-eventos"style=" color: green; font-size: 22px;">
-                {% for evento in eventos if evento.tipo == 'sala' %}
-                    <li class="evento-item">
-                            {{ evento.titulo }}
-                        <form method="POST" action="{{ url_for('routes.deletar_evento', evento_id=evento.id) }}" style="display:inline;">
-                            <button type="submit" class="delete-button">🗑️ Deletar</button>
-                        </form>
-                    </li>
-                {% endfor %}
-            </ul>
-        </div>
+            <div class="section">
+                <h2>Salas</h2>
+                <ul class="lista-eventos">
+                    {% for sala in salas %}
+                        <li class="evento-item">
+                            <a href="{{ url_for('routes.detalhes_evento', evento_id=sala.id) }}">{{ sala.titulo }}</a>
+                            <form method="POST" action="{{ url_for('routes.deletar_evento', evento_id=sala.id) }}">
+                                <button type="submit" class="delete-button">🗑️ Deletar</button>
+                            </form>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
 
-        <div class="section">
-            <h2>Laboratórios</h2>
-            <ul class="lista-eventos" style=" color: green; font-size: 22px;">
-                {% for evento in eventos if evento.tipo == 'laboratorio' %}
-                    <li class="evento-item">
-                            {{ evento.titulo }}
-                        <form method="POST" action="{{ url_for('routes.deletar_evento', evento_id=evento.id) }}" style="display:inline;">
-                            <button type="submit" class="delete-button">🗑️ Deletar</button>
-                        </form>
-                    </li>
-                {% endfor %}
-            </ul>
+            <div class="section">
+                <h2>Laboratórios</h2>
+                <ul class="lista-eventos">
+                    {% for laboratorio in laboratorios %}
+                        <li class="evento-item">
+                            <a href="{{ url_for('routes.detalhes_evento', evento_id=laboratorio.id) }}">{{ laboratorio.titulo }}</a>
+                            <form method="POST" action="{{ url_for('routes.deletar_evento', evento_id=laboratorio.id) }}">
+                                <button type="submit" class="delete-button">🗑️ Deletar</button>
+                            </form>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
         </div>
     </div>
 
