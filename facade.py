@@ -1,8 +1,8 @@
 from flask import Flask, render_template
 from flask_login import LoginManager
 from database import db, init_db
-from models import User
-from auth import auth, MasterUser
+from models import User, MasterUser
+from auth import auth
 from routes import routes
 from flask_migrate import Migrate
 
