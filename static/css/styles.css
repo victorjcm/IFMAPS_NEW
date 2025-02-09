@@ -159,6 +159,7 @@ input {
 }
 
 .login-button {
+    border-radius: 20px;
     background-color: #4CAF50; /* Green */
     border: none;
     color: white;

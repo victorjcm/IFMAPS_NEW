@@ -1,4 +1,3 @@
-<!-- filepath: /c:/Users/vasco/Codigos/ifmaps-new/IFMAPS_NEW/templates/admin_dashboard.html -->
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -6,10 +5,71 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/simple-keyboard/build/css/index.css">
+    <script src="https://cdn.jsdelivr.net/npm/simple-keyboard/build/index.js"></script>
+
+    <style>
+        /* Estilos para tornar o teclado flutuante */
+        .simple-keyboard-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: none;
+            background: white;
+            border: 2px solid #ccc;
+            border-radius: 10px;
+            padding: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            cursor: default; /* Evita que o teclado todo seja arrastável */
+            z-index: 1000;
+        }
+
+        /* Área de arraste nas bordas do teclado */
+        .keyboard-header {
+            text-align: right;
+            font-size: 18px;
+            cursor: grab;
+            font-weight: bold;
+            padding: 8px;
+            color: black;
+            background: #ccc;
+            border-radius: 8px 8px 0 0;
+        }
+
+        /* Botão para abrir o teclado ao lado do input */
+        .toggle-keyboard {
+            padding: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            margin-left: 10px;
+        }
+
+        .toggle-keyboard:hover {
+            background-color: #45a049;
+        }
+
+        /* Layout do formulário */
+        .input-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .input-group input {
+            flex: 1;
+            padding: 10px;
+            font-size: 16px;
+        }
+    </style>
 </head>
 <body>
     <div class="button-container">
-        <button class="back-button" onclick="window.history.back()">↩ Voltar</button>
+        <button class="back-button" onclick="window.location.href='/'">↩ Voltar</button>
     </div>
     <div class="container admin-dashboard">
         <h1>Admin Dashboard</h1>
@@ -23,21 +83,55 @@
         <div class="section">
             <h2>Registrar Novo Usuário</h2>
             <form method="POST" action="{{ url_for('auth.register') }}">
-                <input type="text" name="username" placeholder="Usuário" required>
-                <input type="password" name="password" placeholder="Senha" required>
+                <div class="input-group">
+                    <input type="text" id="username" name="username" placeholder="Usuário" required>
+                    <button type="button" class="toggle-keyboard" onclick="toggleKeyboard()">⌨️</button>
+                </div>
+                
+                <div class="input-group">
+                    <input type="password" id="password" name="password" placeholder="Senha" required>
+                </div>
+
                 <button class="normal-button" type="submit">Registrar</button>
             </form>
         </div>
         {% endif %}
-        
+
+        <!-- ✅ Separando Eventos, Salas e Laboratórios -->
         <div class="section">
             <h2>Eventos</h2>
-            <ul class="lista-eventos">
-                {% for evento in eventos %}
+            <ul class="lista-eventos" style="color: green; font-size: 22px;" >
+                {% for evento in eventos if evento.tipo == 'evento' %}
                     <li class="evento-item">
-                        <a href="{{ url_for('routes.detalhes_evento', evento_id=evento.id) }}">
                             {{ evento.titulo }}
-                        </a>
+                        <form method="POST" action="{{ url_for('routes.deletar_evento', evento_id=evento.id) }}" style="display:inline;">
+                            <button type="submit" class="delete-button">🗑️ Deletar</button>
+                        </form>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>Salas</h2>
+            <ul class="lista-eventos"style=" color: green; font-size: 22px;">
+                {% for evento in eventos if evento.tipo == 'sala' %}
+                    <li class="evento-item">
+                            {{ evento.titulo }}
+                        <form method="POST" action="{{ url_for('routes.deletar_evento', evento_id=evento.id) }}" style="display:inline;">
+                            <button type="submit" class="delete-button">🗑️ Deletar</button>
+                        </form>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>Laboratórios</h2>
+            <ul class="lista-eventos" style=" color: green; font-size: 22px;">
+                {% for evento in eventos if evento.tipo == 'laboratorio' %}
+                    <li class="evento-item">
+                            {{ evento.titulo }}
                         <form method="POST" action="{{ url_for('routes.deletar_evento', evento_id=evento.id) }}" style="display:inline;">
                             <button type="submit" class="delete-button">🗑️ Deletar</button>
                         </form>
@@ -46,5 +140,82 @@
             </ul>
         </div>
     </div>
+
+    <!-- Container do teclado virtual -->
+    <div class="simple-keyboard-container" id="keyboard-container">
+        <div class="keyboard-header" id="keyboard-header">
+            <span onclick="fecharTeclado()">✖ Fechar</span>
+        </div>
+        <div class="simple-keyboard"></div>
+    </div>
+
+    <script>
+        let keyboard;
+        let activeInput = null;
+        let keyboardVisible = false;
+
+        document.addEventListener("DOMContentLoaded", () => {
+            keyboard = new SimpleKeyboard.default({
+                onChange: input => {
+                    if (activeInput) {
+                        activeInput.value = input;
+                    }
+                },
+                onKeyPress: button => {
+                    if (button === "{bksp}") {
+                        activeInput.value = activeInput.value.slice(0, -1);
+                        keyboard.setInput(activeInput.value);
+                    }
+                }
+            });
+        });
+
+        function toggleKeyboard() {
+            let keyboardContainer = document.getElementById("keyboard-container");
+
+            if (keyboardVisible) {
+                fecharTeclado();
+            } else {
+                if (!activeInput) {
+                    setActiveInput("username");
+                }
+                keyboardContainer.style.display = "block";
+                keyboardVisible = true;
+            }
+        }
+
+        function fecharTeclado() {
+            document.getElementById("keyboard-container").style.display = "none";
+            keyboardVisible = false;
+        }
+
+        function setActiveInput(inputId) {
+            activeInput = document.getElementById(inputId);
+            keyboard.setInput(activeInput.value);
+        }
+
+        // Torna o teclado arrastável apenas ao clicar na barra de título
+        let teclado = document.getElementById("keyboard-container");
+        let header = document.getElementById("keyboard-header");
+        let offsetX, offsetY, isDragging = false;
+
+        header.addEventListener("mousedown", (event) => {
+            isDragging = true;
+            offsetX = event.clientX - teclado.getBoundingClientRect().left;
+            offsetY = event.clientY - teclado.getBoundingClientRect().top;
+        });
+
+        document.addEventListener("mousemove", (event) => {
+            if (isDragging) {
+                teclado.style.left = event.clientX - offsetX + "px";
+                teclado.style.top = event.clientY - offsetY + "px";
+            }
+        });
+
+        document.addEventListener("mouseup", () => {
+            isDragging = false;
+        });
+    </script>
+
 </body>
 </html>

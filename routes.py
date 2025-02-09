@@ -47,7 +47,8 @@ def adicionar():
         db.session.add(novo_evento)
         db.session.commit()
         notifier.notify_observers(novo_evento)
-        return redirect(url_for('routes.listar_eventos'))
+        redirect_url = request.args.get('redirect', 'routes.listar_eventos')
+        return redirect(url_for(redirect_url))
 
     return render_template('adicionar.html')
 
