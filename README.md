@@ -20,12 +20,10 @@ O trabalho consiste em implementar um sistema de mapeamento de informações de 
 - **Proxy**: Utilizado para controlar o acesso a um objeto de conexão com o banco de dados.
 
 ## Diagrama de Classes
-<img src=".static\img\diagrama_classe.png" alt="Diagrama de Classes" width="100%"/>
+<img src="./static/img/diagrama_classe.png" alt="Diagrama de Classes" width="100%"/>
 
-.static\img\diagrama_classe.png
 ## Diagrama de Casos de Uso
-
-<img src="..static\img\diagrama_uso.png" alt="Diagrama de Casos de Uso" width="100%"/>
+<img src="./static/img/diagrama_uso.png" alt="Diagrama de Casos de Uso" width="100%"/>
 ## Como executar
 
 1. Clone o repositório
