@@ -17,6 +17,21 @@ O trabalho consiste em implementar um sistema de mapeamento de informações de 
 - **Factory**: Utilizado para criar instâncias de classes de conexão com o banco de dados.
 - **Strategy**: Utilizado para definir algoritmos de mapeamento de informações.
 - **Observer**: Utilizado para notificar os observadores sobre a criação de um novo mapa de informações.
+- **Proxy**: Utilizado para controlar o acesso a um objeto de conexão com o banco de dados.
 
 ## Diagrama de Classes
 <img src="./static/img/ifmaps.png" alt="Diagrama de Classes" width="100%"/>
+
+
+
+## Como executar
+
+1. Clone o repositório
+2. Instale as dependências
+```bash
+pip install -r requirements.txt
+```
+3. Execute o arquivo Facade.py
+```bash
+python Facade.py
+```
