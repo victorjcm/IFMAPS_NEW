@@ -22,33 +22,29 @@ def adicionar():
         tipo = request.form['tipo']
         imagem = request.files['imagem']
 
-        # Definir o diretório de destino com base no tipo
-        if tipo == 'evento':
-            diretorio = 'static/img/eventos'
-        elif tipo == 'sala':
-            diretorio = 'static/img/salas'
-        elif tipo == 'laboratorio':
-            diretorio = 'static/img/laboratorios'
-        else:
-            diretorio = 'static/img/outros'
+        # Diretórios das imagens
+        diretorios = ['static/img/eventos', 'static/img/salas', 'static/img/laboratorios']
+        for diretorio in diretorios:
+            if not os.path.exists(diretorio):
+                os.makedirs(diretorio)
 
-        # Criar o diretório se não existir
-        if not os.path.exists(diretorio):
-            os.makedirs(diretorio)
-
-        # Salvar a imagem no servidor
-        imagem_path = None
+        # Salvar a imagem no primeiro diretório válido
+        imagem_filename = None
         if imagem:
             imagem_filename = imagem.filename
-            imagem_path = os.path.join(diretorio, imagem_filename)
+            imagem_path = os.path.join(diretorios[0], imagem_filename)
             imagem.save(imagem_path)
 
+        # Criar e salvar o evento
         novo_evento = EventoFactory.create_evento(tipo, titulo, descricao, imagem_filename)
         db.session.add(novo_evento)
         db.session.commit()
+
+        # Enviar notificação
         notifier.notify_observers(novo_evento)
-        redirect_url = request.args.get('redirect', 'routes.listar_eventos')
-        return redirect(url_for(redirect_url))
+
+        # Redirecionar para admin_dashboard ao invés de eventos
+        return redirect(url_for('routes.admin_dashboard'))
 
     return render_template('adicionar.html')
 
@@ -74,8 +70,10 @@ def deletar_evento(evento_id):
 @routes.route('/admin')
 @login_required
 def admin_dashboard():
-    eventos = Evento.query.all()
-    return render_template('admin_dashboard.html', eventos=eventos)
+    eventos = Evento.query.filter_by(tipo='evento').all()
+    salas = Evento.query.filter_by(tipo='sala').all()
+    laboratorios = Evento.query.filter_by(tipo='laboratorio').all()
+    return render_template('admin_dashboard.html', eventos=eventos, salas=salas, laboratorios=laboratorios)
 
 @routes.route('/mapa')
 def mapa():
@@ -85,4 +83,5 @@ def mapa():
 
 @routes.route('/notificacoes')
 def notificacoes():
-    return jsonify(admin_observer.get_notifications())
+    """ Retorna todas as notificações como JSON """
+    return jsonify({"notificacoes": admin_observer.get_notifications()})
