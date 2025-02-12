@@ -35,16 +35,21 @@ def logout():
     flash('Logout realizado com sucesso!', 'success')
     return redirect(url_for('auth.login'))
 
-@auth.route('/register', methods=['GET', 'POST'])
+@auth.route('/register', methods=['POST'])
 @login_required
 def register():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
+
+        # Verificar se o nome de usuário já existe
+        existing_user = User.query.filter_by(username=username).first()
+        if existing_user:
+            flash('Nome de usuário já existe. Por favor, escolha outro.', 'danger')
+            return redirect(url_for('routes.admin_dashboard'))
+
         new_user = User(username=username, password=password)
         db.session.add(new_user)
         db.session.commit()
         flash('Usuário registrado com sucesso!', 'success')
-        return redirect(url_for('auth.register'))
-
-    return render_template('register.html')
+        return redirect(url_for('routes.admin_dashboard'))
