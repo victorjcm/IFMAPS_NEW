@@ -1,4 +1,4 @@
-from flask_login import login_user
+from flask_login import login_user # type: ignore
 from models import User, MasterUser
 
 class LoginProxy:

@@ -1,10 +1,10 @@
-from flask import Flask, render_template
-from flask_login import LoginManager
+from flask import Flask, render_template # type: ignore
+from flask_login import LoginManager # type: ignore
 from database import db, init_db
 from models import User, MasterUser
 from auth import auth
 from routes import routes
-from flask_migrate import Migrate
+from flask_migrate import Migrate # type: ignore
 
 class FlaskAppFacade:
     def __init__(self):
