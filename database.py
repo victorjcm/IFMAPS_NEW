@@ -21,6 +21,13 @@ class Database(metaclass=SingletonMeta):
     def __init__(self):
         self.db = SQLAlchemy()
 
+    @classmethod
+    def get_instance(cls):
+        """
+        Retorna a instância única da classe Database.
+        """
+        return cls()
+
 class Config(metaclass=SingletonMeta):
     def __init__(self):
         self.settings = {
@@ -29,6 +36,13 @@ class Config(metaclass=SingletonMeta):
             'SQLALCHEMY_DATABASE_URI': 'sqlite:///user.db'
         }
 
+    @classmethod
+    def get_instance(cls):
+        """
+        Retorna a instância única da classe Config.
+        """
+        return cls()
+
     def get(self, key):
         return self.settings.get(key)
 
@@ -36,10 +50,10 @@ class Config(metaclass=SingletonMeta):
         self.settings[key] = value
 
 # Instância única do banco de dados
-db = Database().db
+db = Database.get_instance().db
 
 # Instância única de Configurações
-config = Config()
+config = Config.get_instance()
 
 def initialize_database():
     """
