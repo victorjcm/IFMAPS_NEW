@@ -1,5 +1,6 @@
 from database import db
 from flask_login import UserMixin # type: ignore
+from werkzeug.security import generate_password_hash, check_password_hash # type: ignore
 
 # Modelo de Usuário
 class User(db.Model, UserMixin):
