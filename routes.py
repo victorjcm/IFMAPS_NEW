@@ -64,6 +64,7 @@ def deletar_evento(evento_id):
     evento = Evento.query.get_or_404(evento_id)
     db.session.delete(evento)
     db.session.commit()
+    notifier.notify_observers_removal(evento)  # Notificar a remoção do evento
     flash('Evento deletado com sucesso!', 'success')
     return redirect(url_for('routes.admin_dashboard'))
 

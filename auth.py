@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
-from flask_login import login_user, login_required, logout_user, current_user, UserMixin
+from flask_login import login_user, login_required, logout_user, current_user
 from database import db
 from models import User, MasterUser
 from proxy import LoginProxy
@@ -21,7 +21,6 @@ def login():
 
         proxy = LoginProxy(strategy)
         if proxy.login(username, password):
-            flash('Login realizado com sucesso!', 'success')
             return redirect(url_for('routes.admin_dashboard'))
         else:
             flash('Nome de usuário ou senha incorretos.', 'danger')
@@ -48,7 +47,8 @@ def register():
             flash('Nome de usuário já existe. Por favor, escolha outro.', 'danger')
             return redirect(url_for('routes.admin_dashboard'))
 
-        new_user = User(username=username, password=password)
+        new_user = User(username=username)
+        new_user.set_password(password)  # Armazenar a senha como hash
         db.session.add(new_user)
         db.session.commit()
         flash('Usuário registrado com sucesso!', 'success')
