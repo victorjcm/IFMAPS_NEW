@@ -3,50 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Adicionar Evento ou Sala</title>
+    <title>Adicionar Evento, Sala ou Laboratório</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/simple-keyboard/build/css/index.css">
     <script src="https://cdn.jsdelivr.net/npm/simple-keyboard/build/index.js"></script>
 
     <style>
-        /* Estilizando o teclado virtual */
-        .simple-keyboard-container {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: none;
-            background: white;
-            border: 2px solid #ccc;
-            border-radius: 10px;
-            padding: 15px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            z-index: 1000;
-            width: 500px;
-        }
-
-        .hg-button {
-            padding: 15px 20px;
-            font-size: 22px;
-        }
-
-        /* Botão de abrir o teclado */
-        .toggle-keyboard {
-            padding: 8px;
-            font-size: 16px;
-            cursor: pointer;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            margin-left: 5px;
-        }
-
-        .toggle-keyboard:hover {
-            background-color: #45a049;
-        }
-
-        /* Layout do formulário */
         .input-group {
             display: flex;
             align-items: center;
@@ -58,6 +20,10 @@
             padding: 10px;
             font-size: 16px;
         }
+
+        .hidden {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -66,7 +32,7 @@
     </div>
 
     <div class="container">
-        <h1>Adicionar Evento ou Sala</h1>
+        <h1>Adicionar Evento, Sala ou Laboratório</h1>
         <form method="POST" action="/adicionar?redirect=admin" enctype="multipart/form-data">
             <!-- Campo Título com botão do teclado -->
             <div class="input-group">
@@ -79,11 +45,25 @@
                 <textarea id="descricao" name="descricao" placeholder="Descrição" required onfocus="setActiveInput(this)"></textarea>
             </div>
 
-            <select name="tipo" required>
+            <!-- Seleção de Tipo -->
+            <select name="tipo" id="tipo" onchange="toggleCamposEspecificos()" required>
                 <option value="evento">Evento</option>
                 <option value="sala">Sala</option>
                 <option value="laboratorio">Laboratório</option>
             </select>
+
+            <!-- Campo para Salas -->
+            <div id="campo-capacidade" class="hidden">
+                <label for="capacidade">Capacidade:</label>
+                <input type="number" name="capacidade">
+            </div>
+
+            <!-- Campo para Laboratórios -->
+            <div id="campo-equipamentos" class="hidden">
+                <label for="equipamentos">Equipamentos:</label>
+                <textarea name="equipamentos" placeholder="Liste os equipamentos disponíveis"></textarea>
+            </div>
+
             <input type="file" name="imagem">
             <button class="normal-button" type="submit">Adicionar</button>
         </form>
@@ -100,8 +80,6 @@
 
         function setActiveInput(inputElement) {
             activeInput = inputElement;
-
-            // 🔴 Reseta o teclado sempre que um novo campo for focado
             keyboard.setInput("");
 
             keyboard.setOptions({
@@ -126,10 +104,7 @@
             let keyboardContainer = document.getElementById("keyboardContainer");
             if (keyboardContainer.style.display === "none") {
                 keyboardContainer.style.display = "block";
-                
-                // 🔴 Limpa o campo do teclado antes de ativá-lo
                 keyboard.clearInput();
-                
                 if (activeInput) {
                     keyboard.setInput(activeInput.value);
                 }
@@ -153,6 +128,12 @@
                 }
             });
         });
+
+        function toggleCamposEspecificos() {
+            let tipo = document.getElementById("tipo").value;
+            document.getElementById("campo-capacidade").style.display = (tipo === "sala") ? "block" : "none";
+            document.getElementById("campo-equipamentos").style.display = (tipo === "laboratorio") ? "block" : "none";
+        }
     </script>
 
 </body>

@@ -1,6 +1,6 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify # type: ignore
-from flask_login import login_required # type: ignore
-from models import Evento
+from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify  # type: ignore
+from flask_login import login_required  # type: ignore
+from models import Evento, Sala, Laboratorio
 from database import db
 from factory import EventoFactory
 from observer import EventoNotifier, AdminObserver
@@ -20,37 +20,42 @@ def adicionar():
         titulo = request.form['titulo']
         descricao = request.form['descricao']
         tipo = request.form['tipo']
-        imagem = request.files['imagem']
+        imagem = request.files.get('imagem')
+        
+        capacidade = request.form.get('capacidade') if tipo == 'sala' else None
+        equipamentos = request.form.get('equipamentos') if tipo == 'laboratorio' else None
 
         # Diretórios das imagens
-        diretorios = ['static/img/eventos', 'static/img/salas', 'static/img/laboratorios']
-        for diretorio in diretorios:
-            if not os.path.exists(diretorio):
-                os.makedirs(diretorio)
+        diretorios = {
+            'evento': 'static/img/eventos',
+            'sala': 'static/img/salas',
+            'laboratorio': 'static/img/laboratorios'
+        }
 
-        # Salvar a imagem no primeiro diretório válido
+        if not os.path.exists(diretorios[tipo]):
+            os.makedirs(diretorios[tipo])
+
         imagem_filename = None
         if imagem:
             imagem_filename = imagem.filename
-            imagem_path = os.path.join(diretorios[0], imagem_filename)
+            imagem_path = os.path.join(diretorios[tipo], imagem_filename)
             imagem.save(imagem_path)
 
-        # Criar e salvar o evento
-        novo_evento = EventoFactory.create_evento(tipo, titulo, descricao, imagem_filename)
-        db.session.add(novo_evento)
+        # Criar e salvar o objeto correto
+        novo_item = EventoFactory.create(tipo, titulo, descricao, imagem_filename, capacidade, equipamentos)
+        db.session.add(novo_item)
         db.session.commit()
 
         # Enviar notificação
-        notifier.notify_observers(novo_evento)
+        notifier.notify_observers(novo_item)
 
-        # Redirecionar para admin_dashboard ao invés de eventos
         return redirect(url_for('routes.admin_dashboard'))
 
     return render_template('adicionar.html')
 
 @routes.route('/eventos')
 def listar_eventos():
-    eventos = Evento.query.filter_by(tipo='evento').all()
+    eventos = Evento.query.all()
     return render_template('eventos.html', eventos=eventos)
 
 @routes.route('/evento/<int:evento_id>')
@@ -58,31 +63,48 @@ def detalhes_evento(evento_id):
     evento = Evento.query.get_or_404(evento_id)
     return render_template('evento.html', evento=evento)
 
-@routes.route('/evento/<int:evento_id>/delete', methods=['POST'])
+@routes.route('/item/<int:item_id>/delete', methods=['POST'])
 @login_required
-def deletar_evento(evento_id):
-    evento = Evento.query.get_or_404(evento_id)
-    db.session.delete(evento)
+def deletar_item(item_id):
+    tipo = request.args.get('tipo')  # Pega o tipo enviado no formulário
+
+    if tipo == "evento":
+        item = Evento.query.get(item_id)
+    elif tipo == "sala":
+        item = Sala.query.get(item_id)
+    elif tipo == "laboratorio":
+        item = Laboratorio.query.get(item_id)
+    else:
+        flash("Tipo inválido!", "danger")
+        return redirect(url_for("routes.admin_dashboard"))
+
+    if not item:
+        flash("Item não encontrado.", "danger")
+        return redirect(url_for("routes.admin_dashboard"))
+
+    db.session.delete(item)
     db.session.commit()
-    notifier.notify_observers_removal(evento)  # Notificar a remoção do evento
-    flash('Evento deletado com sucesso!', 'success')
-    return redirect(url_for('routes.admin_dashboard'))
+    notifier.notify_observers_removal(item)  # Notificar a remoção
+
+    flash(f"{tipo.capitalize()} deletado com sucesso!", "success")
+    return redirect(url_for("routes.admin_dashboard"))
+
+
 
 @routes.route('/admin')
 @login_required
 def admin_dashboard():
-    eventos = Evento.query.filter_by(tipo='evento').all()
-    salas = Evento.query.filter_by(tipo='sala').all()
-    laboratorios = Evento.query.filter_by(tipo='laboratorio').all()
+    eventos = Evento.query.all()
+    salas = Sala.query.all()
+    laboratorios = Laboratorio.query.all()
     return render_template('admin_dashboard.html', eventos=eventos, salas=salas, laboratorios=laboratorios)
 
 @routes.route('/mapa')
 def mapa():
-    salas = Evento.query.filter_by(tipo='sala').all()
-    laboratorios = Evento.query.filter_by(tipo='laboratorio').all()
+    salas = Sala.query.all()
+    laboratorios = Laboratorio.query.all()
     return render_template('mapa.html', salas=salas, laboratorios=laboratorios)
 
 @routes.route('/notificacoes')
 def notificacoes():
-    """ Retorna todas as notificações como JSON """
     return jsonify({"notificacoes": admin_observer.get_notifications()})

@@ -105,9 +105,9 @@
                     {% for evento in eventos %}
                         <li class="evento-item">
                             <a href="{{ url_for('routes.detalhes_evento', evento_id=evento.id) }}">{{ evento.titulo }}</a>
-                            <form method="POST" action="{{ url_for('routes.deletar_evento', evento_id=evento.id) }}">
+                            <form method="POST" action="{{ url_for('routes.deletar_item', item_id=evento.id, tipo='evento') }}">
                                 <button type="submit" class="delete-button">🗑️ Deletar</button>
-                            </form>
+                            </form>                            
                         </li>
                     {% endfor %}
                 </ul>
@@ -119,7 +119,7 @@
                     {% for sala in salas %}
                         <li class="evento-item">
                             <a href="{{ url_for('routes.detalhes_evento', evento_id=sala.id) }}">{{ sala.titulo }}</a>
-                            <form method="POST" action="{{ url_for('routes.deletar_evento', evento_id=sala.id) }}">
+                            <form method="POST" action="{{ url_for('routes.deletar_item', item_id=sala.id, tipo='sala') }}">
                                 <button type="submit" class="delete-button">🗑️ Deletar</button>
                             </form>
                         </li>
@@ -133,7 +133,7 @@
                     {% for laboratorio in laboratorios %}
                         <li class="evento-item">
                             <a href="{{ url_for('routes.detalhes_evento', evento_id=laboratorio.id) }}">{{ laboratorio.titulo }}</a>
-                            <form method="POST" action="{{ url_for('routes.deletar_evento', evento_id=laboratorio.id) }}">
+                            <form method="POST" action="{{ url_for('routes.deletar_item', item_id=laboratorio.id, tipo='laboratorio') }}">
                                 <button type="submit" class="delete-button">🗑️ Deletar</button>
                             </form>
                         </li>

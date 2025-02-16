@@ -1,6 +1,6 @@
 from database import db
-from flask_login import UserMixin # type: ignore
-from werkzeug.security import generate_password_hash, check_password_hash # type: ignore
+from flask_login import UserMixin  # type: ignore
+from werkzeug.security import generate_password_hash, check_password_hash  # type: ignore
 
 # Modelo de Usuário
 class User(db.Model, UserMixin):
@@ -23,17 +23,46 @@ class User(db.Model, UserMixin):
         """
         return check_password_hash(self.password, password)
 
-# Modelo de Evento
-class Evento(db.Model):
+# Modelo Base para Evento, Sala e Laboratório
+class BaseEvento(db.Model):
     """
-    Modelo de dados para os eventos do sistema.
+    Classe base contendo atributos comuns para Evento, Sala e Laboratório.
     """
+    __abstract__ = True  # Não cria tabela diretamente
+
     id = db.Column(db.Integer, primary_key=True)
     titulo = db.Column(db.String(150), nullable=False)
     descricao = db.Column(db.Text, nullable=False)
     imagem = db.Column(db.String(300), nullable=True)
     tipo = db.Column(db.String(50), nullable=False)
 
+# Modelo para Eventos Gerais
+class Evento(BaseEvento):
+    """
+    Modelo para eventos gerais.
+    """
+    __tablename__ = 'eventos'
+    tipo = db.Column(db.String(50), default='evento', nullable=False)
+
+# Modelo para Salas
+class Sala(BaseEvento):
+    """
+    Modelo para salas disponíveis.
+    """
+    __tablename__ = 'salas'
+    capacidade = db.Column(db.Integer, nullable=True)  # Capacidade da sala
+    tipo = db.Column(db.String(50), default='sala', nullable=False)
+
+# Modelo para Laboratórios
+class Laboratorio(BaseEvento):
+    """
+    Modelo para laboratórios.
+    """
+    __tablename__ = 'laboratorios'
+    equipamentos = db.Column(db.String(500), nullable=True)  # Lista de equipamentos disponíveis
+    tipo = db.Column(db.String(50), default='laboratorio', nullable=False)
+
+# Modelo de Usuário Administrador
 class MasterUser(UserMixin):
     """
     Modelo de dados para o usuário administrador.
