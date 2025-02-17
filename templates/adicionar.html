@@ -50,19 +50,7 @@
                 <option value="evento">Evento</option>
                 <option value="sala">Sala</option>
                 <option value="laboratorio">Laboratório</option>
-            </select>
-
-            <!-- Campo para Salas -->
-            <div id="campo-capacidade" class="hidden">
-                <label for="capacidade">Capacidade:</label>
-                <input type="number" name="capacidade">
-            </div>
-
-            <!-- Campo para Laboratórios -->
-            <div id="campo-equipamentos" class="hidden">
-                <label for="equipamentos">Equipamentos:</label>
-                <textarea name="equipamentos" placeholder="Liste os equipamentos disponíveis"></textarea>
-            </div>
+            </select>     
 
             <input type="file" name="imagem">
             <button class="normal-button" type="submit">Adicionar</button>
@@ -129,11 +117,6 @@
             });
         });
 
-        function toggleCamposEspecificos() {
-            let tipo = document.getElementById("tipo").value;
-            document.getElementById("campo-capacidade").style.display = (tipo === "sala") ? "block" : "none";
-            document.getElementById("campo-equipamentos").style.display = (tipo === "laboratorio") ? "block" : "none";
-        }
     </script>
 
 </body>

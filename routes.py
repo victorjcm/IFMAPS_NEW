@@ -46,8 +46,9 @@ def adicionar():
         db.session.add(novo_item)
         db.session.commit()
 
-        # Enviar notificação
-        notifier.notify_observers(novo_item)
+        # Enviar notificação apenas para eventos
+        if tipo == 'evento':
+            notifier.notify_observers(novo_item)
 
         return redirect(url_for('routes.admin_dashboard'))
 
@@ -84,12 +85,13 @@ def deletar_item(item_id):
 
     db.session.delete(item)
     db.session.commit()
-    notifier.notify_observers_removal(item)  # Notificar a remoção
+
+    # Notificar a remoção apenas para eventos
+    if tipo == 'evento':
+        notifier.notify_observers_removal(item)
 
     flash(f"{tipo.capitalize()} deletado com sucesso!", "success")
     return redirect(url_for("routes.admin_dashboard"))
-
-
 
 @routes.route('/admin')
 @login_required

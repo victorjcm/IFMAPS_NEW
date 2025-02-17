@@ -25,9 +25,10 @@ class AdminObserver(Observer):
         Args:
             evento (Evento): O evento que foi criado.
         """
-        notification = f"🔔 Novo {evento.tipo} adicionado: {evento.titulo}"
-        self.notifications.append(notification)
-        print(notification)  # Debug: mostra a notificação no console
+        if evento.tipo == 'evento':
+            notification = f"🔔 Novo {evento.tipo} adicionado: {evento.titulo}"
+            self.notifications.append(notification)
+            print(notification)  # Debug: mostra a notificação no console
 
     def remove_notification(self, evento):
         """
@@ -36,10 +37,11 @@ class AdminObserver(Observer):
         Args:
             evento (Evento): O evento que foi deletado.
         """
-        notification = f"🔔 Novo {evento.tipo} adicionado: {evento.titulo}"
-        if notification in self.notifications:
-            self.notifications.remove(notification)
-            print(f"Notificação removida: {notification}")  # Debug: mostra a remoção no console
+        if evento.tipo == 'evento':
+            notification = f"🔔 Novo {evento.tipo} adicionado: {evento.titulo}"
+            if notification in self.notifications:
+                self.notifications.remove(notification)
+                print(f"Notificação removida: {notification}")  # Debug: mostra a remoção no console
 
     def get_notifications(self):
         """
