@@ -29,5 +29,7 @@ class UserAuthStrategy(AuthStrategy):
     Estratégia de autenticação para usuários comuns.
     """
     def authenticate(self, username, password):
-        user = User.query.filter_by(username=username, password=password).first()
-        return user is not None
+        user = User.query.filter_by(username=username).first()
+        if user and user.check_password(password):
+            return True
+        return False
